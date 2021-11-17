@@ -1,9 +1,23 @@
 let arrayKeys = document.getElementsByClassName("key");
-console.log(arrayKeys);
 arrayKeys = [...arrayKeys];
-console.log(arrayKeys);
 
-let valid = true;
+let arrayKeysNumbers = document.getElementsByClassName("keyNumber");
+arrayKeysNumbers = [...arrayKeysNumbers];
+
+let arrayKeysSymbol = document.getElementsByClassName("keySymbol");
+arrayKeysSymbol = [...arrayKeysSymbol];
+
+let arraykeysOperation = document.getElementsByClassName("keyOperation");
+arraykeysOperation = [...arraykeysOperation];
+
+let count = 0;
+let x = 0;
+let y = 0;
+
+let symbol;
+
+let valid = false;
+let delet = false;
 
 let one = document.getElementById("1");
 let two = document.getElementById("2");
@@ -17,8 +31,9 @@ let nine = document.getElementById("9");
 let zero = document.getElementById("0");
 
 let display = document.getElementById("result");
+let subDisplay = document.getElementById("subDisplay");
 
-let onOff = document.getElementById("onOff");
+let off = document.getElementById("off");
 let reset = document.getElementById("reset");
 
 let plus = document.getElementById("plus");
@@ -28,24 +43,119 @@ let divide = document.getElementById("divide");
 let point = document.getElementById("point");
 let equals = document.getElementById("equls");
 
-arrayKeys.forEach((key) => {
+arrayKeysSymbol.forEach((key) => {
 	key.addEventListener("click", () => {
-		if (valid) {
-			if (isNaN(key.innerHTML) && valid) {
-				display.innerHTML += key.innerHTML;
+		let value = key.innerHTML;
+		let number = display.innerHTML;
+		subDisplay.innerHTML += " " + value + " ";
 
-				valid = !valid;
+		if (value === "=") {
+			if (count == 0) {
+				alert("insert 2 numbers");
+				arraykeysOperation.forEach((key) => {
+					key.disabled = !key.disabled;
+				});
 			} else {
-				if (isNaN(key.innerHTML) && !valid) {
-					console.log("doble simbolo");
+				y = parseInt(number);
+				let show = calculate(x, y, symbol);
+				display.innerHTML = show;
+				if (isNaN(show)) {
+					subDisplay.innerHTML = "";
 				} else {
-					display.innerHTML += key.innerHTML;
-
-					valid = true;
+					subDisplay.innerHTML += show + " | ";
 				}
+
+				valid = false;
+				delet = true;
+				count = 0;
+				symbol = "";
 			}
 		}
 
-		console.log("funciona");
+		if (valid && count == 0) {
+			symbol = key.innerHTML;
+			x = parseInt(number);
+			display.innerHTML = "";
+			valid = false;
+			count++;
+			arraykeysOperation.forEach((key) => {
+				key.disabled = !key.disabled;
+			});
+		} else {
+			if (valid && count == 1) {
+				symbol = key.innerHTML;
+				y = parseInt(number);
+				display.innerHTML = calculate(x, y, symbol);
+				subDisplay.innerHTML += ` ${symbol}`;
+
+				valid = false;
+				delet = true;
+				count = 0;
+			}
+		}
+	});
+});
+
+arrayKeysNumbers.forEach((key) => {
+	key.addEventListener("click", () => {
+		if (delet) {
+			display.innerHTML = "";
+			delet = false;
+		}
+		if (symbol === "") {
+			symbol = undefined;
+			arraykeysOperation.forEach((key) => {
+				key.disabled = !key.disabled;
+			});
+		}
+		valid = true;
+		let value = key.innerHTML;
+		display.innerHTML += value;
+		subDisplay.innerHTML += value;
+	});
+});
+
+const calculate = (x, y, symbol) => {
+	let res;
+	switch (symbol) {
+		case "+":
+			res = parseInt(x) + parseInt(y);
+			break;
+		case "*":
+			res = parseInt(x) * parseInt(y);
+			break;
+		case "-":
+			res = parseInt(x) - parseInt(y);
+			break;
+		case "/":
+			y !== 0
+				? (res = parseInt(x) / parseInt(y))
+				: (res = resetCalculator());
+			break;
+	}
+	return res;
+};
+reset.addEventListener("click", () => {
+	arraykeysOperation.forEach((key) => {
+		key.disabled = true;
+	});
+	resetCalculator();
+});
+
+const resetCalculator = () => {
+	display.innerHTML = "";
+	subDisplay.innerHTML = "";
+	count = 0;
+	x = 0;
+	y = 0;
+	symbol = "";
+	valid = false;
+	delet = false;
+	return "";
+};
+
+off.addEventListener("click", () => {
+	arrayKeys.forEach((key) => {
+		key.disabled = true;
 	});
 });

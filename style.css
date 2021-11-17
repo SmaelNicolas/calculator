@@ -35,6 +35,7 @@ body {
 }
 
 .display,
+.subDisplay,
 .onOff,
 .reset,
 .buttons,
@@ -46,9 +47,15 @@ body {
 }
 
 .display {
-	display: flex;
+	display: grid;
+	grid-template-columns: 100%;
+	grid-template-rows: 30% 70%;
 	justify-content: end;
 	align-items: center;
+}
+
+.subDisplay {
+	text-align: end;
 }
 
 .result {
